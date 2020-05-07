@@ -7,7 +7,5 @@ window1.add_custom_sprite(spr1)
 
 
 
-
-
 while 1:
     window1.tick()
