@@ -8,10 +8,14 @@ box_num=10
 boxes = []
 box_size = windowsize[0] / box_num
 
+AI_TRAIN = True
+
 ai_input=[]
 
+def save_number(data,number):
+    pass
+
 def clicked_box(obj):
-    print("click")
     obj.color=colors.green
     obj.thickness=0
     obj.highlighted=True
@@ -21,10 +25,10 @@ def clicked_button1(obj):
         is_highlited=0
         if hasattr(i, 'highlighted'):
             if (i.highlighted):
-                print(i.name)
                 is_highlited=1
         ai_input.append(is_highlited)
-    print(ai_input)
+    if AI_TRAIN:
+        num = input("What Number is this?: ")
 
 for y in range(box_num):
     for x in range(box_num):
@@ -39,7 +43,6 @@ window1.add_custom_sprite(button1)
 
 for i in boxes:
     window1.add_custom_sprite(i)
-
 
 
 while 1:

@@ -50,7 +50,6 @@ class shape(sprite):
 
     def clicked(self):
         if self.onclick != None:
-            print(self.onclick)
             self.onclick(self)
 
 class python_GUI():
@@ -100,7 +99,6 @@ class python_GUI():
 
             if (pos[0] > x and pos[0] < x + width) and \
                 (pos[1] > y and pos[1] < y + height):
-                print("clicked on: " + i.name)
                 i.clicked()
 
     def __check_events(self):
@@ -113,7 +111,6 @@ class python_GUI():
                 self.__clicked_on(pos)
                 if self.onclick != None:
                     onclick()
-                print(pos)
 
         for i in self.sprites:
             i.tick()
