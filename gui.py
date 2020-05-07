@@ -58,7 +58,7 @@ class shape(sprite):
                 self.onDrag(self)
 
 class python_GUI():
-    FPS             = 60
+    FPS             = 1000
     WINDOW_TITLE    = ""
     WINDOW_SIZE     = (800,600)
     BG_color        = colors.black
@@ -104,8 +104,8 @@ class python_GUI():
             width=i.width
             height=i.height
 
-            if (pos[0] > x and pos[0] <= x + width) and \
-                (pos[1] > y and pos[1] <= y + height):
+            if (pos[0] >= x and pos[0] <= x + width) and \
+                (pos[1] >= y and pos[1] <= y + height):
                     i.clicked(mode)
 
     def __check_events(self):

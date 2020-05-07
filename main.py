@@ -1,8 +1,11 @@
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()
 from gui import *
 from nn_class import *
 import os,sys
 import easygui
 import tensorflow as tf  # deep learning library. Tensors are just multi-dimensional arrays
+print(tf.config.experimental.list_physical_devices('GPU'))
 
 test_data = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
 test_answer = [1]
@@ -10,38 +13,40 @@ model = tf.keras.models.Sequential()  # a basic feed-forward model
 
 # mnist = tf.keras.datasets.mnist  # mnist is a dataset of 28x28 images of handwritten digits and their labels
 # (x_train, y_train),(x_test, y_test) = mnist.load_data()  # unpacks images to x_train/x_test and labels to y_train/y_test
+box_num=50
+boxes = []
+windowsize = (800,850)
+
+window1 = python_GUI("test1",windowsize)
+
+
+box_size = windowsize[0] / box_num
+test_number = 0
+test_count = 0
+# training_itterations = 10000
+ai_datafile = "ai_data-3.txt"
+
+AI_TRAIN = True
+
 
 
 def keras_train(x_train,y_train):
-    model.add(tf.keras.layers.Dense(128, input_dim=100, activation=tf.nn.relu))  # takes our 28x28 and makes it 1x784
-    model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
-    model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
+    model.add(tf.keras.layers.Dense(20, input_dim=box_num*box_num, activation=tf.nn.relu))  # takes our 28x28 and makes it 1x784
+    model.add(tf.keras.layers.Dense(20, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
+    model.add(tf.keras.layers.Dense(20, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
     model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))  # our output layer. 10 units for 10 classes. Softmax for probability distribution
 
     model.compile(optimizer='adam',  # Good default optimizer to start with
                   loss='sparse_categorical_crossentropy',  # how will we calculate our "error." Neural network aims to minimize loss.
                   metrics=['accuracy'])  # what to track
 
-    model.fit(x_train, y_train, epochs=100)  # train the model
+    model.fit(x_train, y_train, epochs=1000)  # train the model
 
-    val_loss, val_acc = model.evaluate(test_data, test_answer)  # evaluate the out of sample data with model
-    print("loss: " + str(val_loss))  # model's loss (error)
-    print("accuracy: " + str(val_acc))  # model's accuracy
+    # val_loss, val_acc = model.evaluate(test_data, test_answer)  # evaluate the out of sample data with model
+    # print("loss: " + str(val_loss))  # model's loss (error)
+    # print("accuracy: " + str(val_acc))  # model's accuracy
 
-windowsize = (300,350)
 
-window1 = python_GUI("test1",windowsize)
-
-box_num=10
-boxes = []
-box_size = windowsize[0] / box_num
-test_number = 0
-test_count = 0
-
-# training_itterations = 10000
-ai_datafile = "ai_data.txt"
-
-AI_TRAIN = True
 
 # nn1 = NeuralNetwork()
 
@@ -49,7 +54,8 @@ def think_test(obj=None):
     x_test = check_boxes()
     predictions = model.predict([x_test])
     for i in range(0,10):
-        print(str(i) + " : " + str(predictions[0][i]))
+        print(str(i) + " : " + str("{:.7f}".format(predictions[0][i])))
+
     print('\n')
 
 def nn_train(obj=None):
@@ -133,11 +139,12 @@ for y in range(box_num):
         box.onDrag=clicked_box
         boxes.append(box)
 
+start_pos = windowsize[1]-50
 
-button1 = shape("Button1",0,300,50,50,0,colors.blue)
-button2 = shape("Reset",50,300,50,50,0,colors.red)
-button3 = shape("Think",100,300,50,50,0,colors.green)
-button4 = shape("Train",150,300,50,50,0,colors.white)
+button1 = shape("Button1",0,start_pos,50,50,0,colors.blue)
+button2 = shape("Reset",50,start_pos,50,50,0,colors.red)
+button3 = shape("Think",100,start_pos,50,50,0,colors.green)
+button4 = shape("Train",150,start_pos,50,50,0,colors.white)
 
 button1.onclick=clicked_button1
 button2.onclick=reset_boxes
