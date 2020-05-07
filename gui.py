@@ -35,6 +35,7 @@ class shape(sprite):
     thickness=0
     color=0
     onclick = None
+    onDrag = None
 
     def __init__(self,name,x=0,y=0,width=0,height=0,thickness=0,color=colors.white, visible=True):
         super().__init__(name,x,y,width,height,visible)
@@ -48,9 +49,13 @@ class shape(sprite):
     def tick(self):
         pass
 
-    def clicked(self):
-        if self.onclick != None:
-            self.onclick(self)
+    def clicked(self,mode):
+        if mode == 1:
+            if self.onclick != None:
+                self.onclick(self)
+        if mode == 2:
+            if self.onDrag != None:
+                self.onDrag(self)
 
 class python_GUI():
     FPS             = 60
@@ -63,6 +68,8 @@ class python_GUI():
 
     display         = None
     fpsClock        = None
+
+    mouse_status    = 0
 
     onclick = None
 
@@ -90,27 +97,35 @@ class python_GUI():
         self.sprite_count += 1
         return uid
 
-    def __clicked_on(self,pos):
+    def __clicked_on(self,pos,mode):
         for i in self.sprites:
             x=i.x
             y=i.y
             width=i.width
             height=i.height
 
-            if (pos[0] > x and pos[0] < x + width) and \
-                (pos[1] > y and pos[1] < y + height):
-                i.clicked()
+            if (pos[0] > x and pos[0] <= x + width) and \
+                (pos[1] > y and pos[1] <= y + height):
+                    i.clicked(mode)
 
     def __check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+
+            if(self.mouse_status == 1):
+                if event.type == pygame.MOUSEMOTION:
+                    mouse_position = pygame.mouse.get_pos()
+                    self.__clicked_on(mouse_position,2)
+
             if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                self.__clicked_on(pos)
-                if self.onclick != None:
-                    onclick()
+                mouse_position = pygame.mouse.get_pos()
+                self.__clicked_on(mouse_position,1)
+                self.mouse_status = 1
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                self.mouse_status = 0
 
         for i in self.sprites:
             i.tick()
