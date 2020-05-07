@@ -1,7 +1,5 @@
 import numpy as np
 
-
-
 class NeuralNetwork():
     synaptic_weights = 0
 

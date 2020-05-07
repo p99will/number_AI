@@ -34,6 +34,7 @@ class sprite():
 class shape(sprite):
     thickness=0
     color=0
+    onclick = None
 
     def __init__(self,name,x=0,y=0,width=0,height=0,thickness=0,color=colors.white, visible=True):
         super().__init__(name,x,y,width,height,visible)
@@ -47,6 +48,11 @@ class shape(sprite):
     def tick(self):
         pass
 
+    def clicked(self):
+        if self.onclick != None:
+            print(self.onclick)
+            self.onclick(self)
+
 class python_GUI():
     FPS             = 60
     WINDOW_TITLE    = ""
@@ -58,6 +64,8 @@ class python_GUI():
 
     display         = None
     fpsClock        = None
+
+    onclick = None
 
     def __init__(self,title,windowsize=(800,600),fps=60):
         self.WINDOW_TITLE   = title
@@ -83,11 +91,29 @@ class python_GUI():
         self.sprite_count += 1
         return uid
 
+    def __clicked_on(self,pos):
+        for i in self.sprites:
+            x=i.x
+            y=i.y
+            width=i.width
+            height=i.height
+
+            if (pos[0] > x and pos[0] < x + width) and \
+                (pos[1] > y and pos[1] < y + height):
+                print("clicked on: " + i.name)
+                i.clicked()
+
     def __check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                self.__clicked_on(pos)
+                if self.onclick != None:
+                    onclick()
+                print(pos)
 
         for i in self.sprites:
             i.tick()
