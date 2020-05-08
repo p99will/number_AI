@@ -13,9 +13,9 @@ model = tf.keras.models.Sequential()  # a basic feed-forward model
 
 # mnist = tf.keras.datasets.mnist  # mnist is a dataset of 28x28 images of handwritten digits and their labels
 # (x_train, y_train),(x_test, y_test) = mnist.load_data()  # unpacks images to x_train/x_test and labels to y_train/y_test
-box_num=50
+box_num=20
 boxes = []
-windowsize = (800,850)
+windowsize = (300,350)
 
 window1 = python_GUI("test1",windowsize)
 
@@ -24,23 +24,21 @@ box_size = windowsize[0] / box_num
 test_number = 0
 test_count = 0
 # training_itterations = 10000
-ai_datafile = "ai_data-3.txt"
+ai_datafile = "ai_data20-20-2.txt"
 
 AI_TRAIN = True
 
-
-
 def keras_train(x_train,y_train):
-    model.add(tf.keras.layers.Dense(20, input_dim=box_num*box_num, activation=tf.nn.relu))  # takes our 28x28 and makes it 1x784
-    model.add(tf.keras.layers.Dense(20, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
-    model.add(tf.keras.layers.Dense(20, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
+    model.add(tf.keras.layers.Dense(128, input_dim=box_num*box_num, activation=tf.nn.relu))  # takes our 28x28 and makes it 1x784
+    model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
+    model.add(tf.keras.layers.Dense(128, activation=tf.nn.relu))  # a simple fully-connected layer, 128 units, relu activation
     model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))  # our output layer. 10 units for 10 classes. Softmax for probability distribution
 
     model.compile(optimizer='adam',  # Good default optimizer to start with
                   loss='sparse_categorical_crossentropy',  # how will we calculate our "error." Neural network aims to minimize loss.
                   metrics=['accuracy'])  # what to track
 
-    model.fit(x_train, y_train, epochs=1000)  # train the model
+    model.fit(x_train, y_train, epochs=10000)  # train the model
 
     # val_loss, val_acc = model.evaluate(test_data, test_answer)  # evaluate the out of sample data with model
     # print("loss: " + str(val_loss))  # model's loss (error)
@@ -52,9 +50,11 @@ def keras_train(x_train,y_train):
 
 def think_test(obj=None):
     x_test = check_boxes()
+
     predictions = model.predict([x_test])
     for i in range(0,10):
         print(str(i) + " : " + str("{:.7f}".format(predictions[0][i])))
+
 
     print('\n')
 
@@ -77,7 +77,6 @@ def nn_train(obj=None):
                 tmp.append(int(ii))
         data.append(tmp)
 
-
     x_train = data
     y_train = answers
 
@@ -87,6 +86,9 @@ def nn_train(obj=None):
     # nn1.train(data,answers,training_itterations)
 
 def save_number(data,number):
+    # val_loss, val_acc = model.evaluate(data, number)  # evaluate the out of sample data with model
+    # print("loss: " + str(val_loss))  # model's loss (error)
+    # print("accuracy: " + str(val_acc))  # model's accuracy
     text = str(number) + ":"
     for i in data:
         text += str(i) + ','
@@ -98,12 +100,14 @@ def clicked_box(obj):
     obj.color=colors.green
     obj.thickness=0
     obj.highlighted=True
+    obj.visible=True
 
 def reset_boxes(obj=None):
     for i in boxes:
         i.highlighted = 0
         i.color = colors.white
         i.thickness = 1
+        i.visible=False
 
 def check_boxes():
     ai_input=[]
