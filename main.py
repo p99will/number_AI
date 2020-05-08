@@ -38,7 +38,7 @@ def keras_train(x_train,y_train):
                   loss='sparse_categorical_crossentropy',  # how will we calculate our "error." Neural network aims to minimize loss.
                   metrics=['accuracy'])  # what to track
 
-    model.fit(x_train, y_train, epochs=10000)  # train the model
+    model.fit(x_train, y_train, epochs=1000)  # train the model
 
     # val_loss, val_acc = model.evaluate(test_data, test_answer)  # evaluate the out of sample data with model
     # print("loss: " + str(val_loss))  # model's loss (error)
